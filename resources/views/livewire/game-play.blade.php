@@ -30,7 +30,7 @@
             <h2 class="text-2xl font-semibold mb-4">Results:</h2>
             @foreach ($game->prompts as $prompt)
                 <div class="mb-6 p-4 bg-gray-100 rounded-md">
-                    <h3 class="text-xl  font-semibold mb-2">{{ $prompt }}</h3>
+                    <h3 class="text-xl font-semibold mb-2">{{ $prompt }}</h3>
                     @foreach ($game->answers[$prompt] as $player => $answer)
                         <p class="mb-2">
                             <span class="font-semibold">{{ $player }}:</span> {{ $answer }} 
@@ -45,3 +45,14 @@
         @endif
     </div>
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('livewire:load', function () {
+        Echo.channel('game.{{ $gameCode }}')
+            .listen('GameStateChanged', (e) => {
+                Livewire.dispatch('refreshGame');
+            });
+    });
+</script>
+@endpush

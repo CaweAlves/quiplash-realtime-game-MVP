@@ -16,6 +16,8 @@ class GamePlay extends Component
     public $playerName;
     public $errorMessage = '';
 
+    protected $listeners = ['refreshGame'];
+
     public function mount($gameCode)
     {
         $this->gameCode = $gameCode;
@@ -89,6 +91,12 @@ class GamePlay extends Component
             }
         }
         return true;
+    }
+
+    public function refreshGame()
+    {
+        $this->game->refresh();
+        $this->currentPrompt = $this->getCurrentPromptForPlayer();
     }
 
     public function render()

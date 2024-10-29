@@ -27,10 +27,27 @@
             </ul>
         </div>
         
-        @if (count($game->players ?? []) >= 3 && in_array($playerName, $game->players ?? []))
+        @if ($isHost && count($game->players ?? []) >= 3)
             <button wire:click="startGame" class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition duration-300">Start Game</button>
+        @elseif (!$isHost)
+            <p class="text-center text-gray-600">Waiting for the host to start the game...</p>
         @else
             <p class="text-center text-gray-600">Waiting for more players to join...</p>
         @endif
     </div>
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('livewire:load', function () {
+        Echo.channel('game.{{ $gameCode }}')
+            .listen('PlayerJoined', (e) => {
+                console.log("Player Joined")
+                Livewire.dispatch('refreshLobby');
+            })
+            .listen('GameStarted', (e) => {
+                Livewire.dispatch('startGame');
+            });
+    });
+</script>
+@endpush

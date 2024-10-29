@@ -21,4 +21,9 @@ class PlayerJoined implements ShouldBroadcast
     {
         return new Channel('game.' . $this->game->code);
     }
+
+    public function broadcastAs()
+    {
+        return 'PlayerJoined';
+    }
 }

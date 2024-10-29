@@ -13,14 +13,18 @@ class GameLobby extends Component
     public $playerName = '';
     public $game;
     public $errorMessage = '';
+    public $isHost = false;
+
+    protected $listeners = ['refreshLobby', 'startGame'];
 
     public function mount($gameCode = null)
     {
         $this->gameCode = $gameCode ?? $this->generateGameCode();
         $this->game = Game::firstOrCreate(
             ['code' => $this->gameCode],
-            ['players' => []] // Ensure players is initialized as an empty array
+            ['status' => GameStatus::Waiting, 'players' => []]
         );
+        $this->isHost = !$gameCode; // The player who creates the game is the host
     }
 
     public function joinGame()
@@ -37,9 +41,9 @@ class GameLobby extends Component
 
         $players[] = $this->playerName;
         $this->game->update(['players' => $players]);
-
+        
         event(new PlayerJoined($this->game, $this->playerName));
-
+        
         session(['player_name' => $this->playerName]);
         $this->errorMessage = '';
     }
@@ -53,6 +57,11 @@ class GameLobby extends Component
 
         $this->game->update(['status' => GameStatus::Prompts]);
         $this->redirect(route('game.play', ['gameCode' => $this->gameCode]));
+    }
+
+    public function refreshLobby()
+    {
+        $this->game->refresh();
     }
 
     private function generateGameCode(): string
