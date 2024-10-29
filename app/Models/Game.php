@@ -25,6 +25,7 @@ class Game extends Model
         static::creating(function ($game) {
             $game->prompts = $game->getRandomPrompts(10);
             $game->status = GameStatus::Waiting;
+            $game->players = [];
         });
     }
 
