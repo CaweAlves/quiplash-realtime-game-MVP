@@ -39,15 +39,15 @@
 
 @push('scripts')
 <script>
-    document.addEventListener('livewire:load', function () {
-        Echo.channel('game.{{ $gameCode }}')
-            .listen('PlayerJoined', (e) => {
-                console.log("Player Joined")
-                Livewire.dispatch('refreshLobby');
-            })
-            .listen('GameStarted', (e) => {
-                Livewire.dispatch('startGame');
-            });
-    });
+    // document.addEventListener('livewire:load', function () {
+    //     Echo.channel('game.{{ $gameCode }}')
+    //         .listen('PlayerJoined', e => {
+    //             console.log("Player Joined")
+    //             Livewire.dispatch('refreshLobby');
+    //         })
+    //         .listen('GameStarted', (e) => {
+    //             Livewire.dispatch('startGame');
+    //         });
+    // });
 </script>
 @endpush

@@ -15,7 +15,12 @@ class GameLobby extends Component
     public $errorMessage = '';
     public $isHost = false;
 
-    protected $listeners = ['refreshLobby', 'startGame'];
+    public function getListeners()
+    {
+        return [
+            "echo:game.{$this->game->code}, PlayerJoined" => 'refreshLobby',
+        ];
+    }
 
     public function mount($gameCode = null)
     {
@@ -41,9 +46,9 @@ class GameLobby extends Component
 
         $players[] = $this->playerName;
         $this->game->update(['players' => $players]);
-        
+
         event(new PlayerJoined($this->game, $this->playerName));
-        
+
         session(['player_name' => $this->playerName]);
         $this->errorMessage = '';
     }
@@ -61,7 +66,8 @@ class GameLobby extends Component
 
     public function refreshLobby()
     {
-        $this->game->refresh();
+        $this->redirect(route('game.play', ['gameCode' => $this->gameCode]));
+
     }
 
     private function generateGameCode(): string
